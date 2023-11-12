@@ -1,0 +1,32 @@
+version: "3"
+services:
+    node-dependency:
+        container_name: node-container
+        image: node:20.9
+
+    my-mongo-db:
+        container_name: my-mongo-db-container
+        image: mongo:7.0.2
+        restart: always
+        volumes:
+            - mongodb-volume:/data/db
+        ports:
+            - ${MONGO_HOST_PORT}:27017
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+            MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+            MONGO_INITDB_DATABASE: "TestEnvironmentDB"
+        command: ["--auth"]
+    my-redis-db:
+        container_name: redis-container
+        image: redis:7.0-alpine
+        restart: always
+        volumes:
+            - redisdb-volume:/data
+        ports:
+            - ${REDIS_HOST_PORT}:6379
+volumes:
+    mongodb-volume:
+        external: true
+    redisdb-volume:
+        external: true
